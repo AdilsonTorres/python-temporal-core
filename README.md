@@ -84,6 +84,16 @@ Cada diretório de `src/exemplos/` é um padrão. Abra a UI em http://localhost:
 | [e08](src/exemplos/e08_versionamento/README.md) | Versionamento com `workflow.patched` (extra) | `e08-worker-v1` · `e08-worker-v2` · `e08` | Troca de versão com workflow em andamento, sem quebrar o replay |
 | [e09](src/exemplos/e09_benchmark_python/README.md) | Fan-out de benchmarks (extra) | `e09-worker` · `e09` | Uma activity por medição, 1 por vez; resumo por versão do Python |
 
+### Extras (branch extras)
+
+| Exemplo | Tema | Comandos | O que mostra |
+|---|---|---|---|
+| [e10](src/exemplos/e10_automacao_rede/README.md) | Automação de rede com rollback | `e10-worker` · `e10` · `e10-falha` · `e10-api` | Saga: verificação falha e a config é revertida; webhook idempotente |
+| [e11](src/exemplos/e11_lembrete_soneca/README.md) | Lembrete com soneca | `e11-worker` · `e11` | Timer cancelável, Signals e `continue_as_new` |
+| [e12](src/exemplos/e12_fanout_child/README.md) | Fan-out com child workflows | `e12-worker` · `e12` | 10 filhos em lotes de 3, Query de progresso |
+| [e13](src/exemplos/e13_canario_worker/README.md) | Canário de workers | `e13-worker` · `e13` · `e13-agendar` | Alerta quando uma task queue fica sem poller |
+| [e14](src/exemplos/e14_entidade_carrinho/README.md) | Entidade: carrinho | `e14-worker` · `e14` | Updates com validador e workflow vivo por entidade |
+
 Cada comando abaixo roda em um terminal, com o servidor (`make servidor`) já de pé.
 
 ### e00: o problema

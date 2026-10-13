@@ -98,6 +98,37 @@ e09-worker: ## E09: worker do benchmark
 e09: ## E09: roda o benchmark entre versões do Python (10 rodadas; ARGS="--rodadas 2")
 	$(RUN) exemplos.e09_benchmark_python.iniciar $(ARGS)
 
+e10-worker: ## E10: worker da automação de rede
+	$(RUN) exemplos.e10_automacao_rede.worker
+e10: ## E10: renomeia um dispositivo (saga com sucesso)
+	$(RUN) exemplos.e10_automacao_rede.iniciar
+e10-falha: ## E10: verificação falha e a config é revertida
+	$(RUN) exemplos.e10_automacao_rede.iniciar --falhar-verificacao
+e10-api: ## E10: API do webhook (porta 8010)
+	uv run uvicorn exemplos.e10_automacao_rede.api:app --port 8010
+
+e11-worker: ## E11: worker do lembrete
+	$(RUN) exemplos.e11_lembrete_soneca.worker
+e11: ## E11: lembrete que soneca 3x e faz continue_as_new
+	$(RUN) exemplos.e11_lembrete_soneca.iniciar
+
+e12-worker: ## E12: worker do fan-out de relatórios
+	$(RUN) exemplos.e12_fanout_child.worker
+e12: ## E12: 10 relatórios em lotes de 3, com progresso
+	$(RUN) exemplos.e12_fanout_child.iniciar
+
+e13-worker: ## E13: worker do canário
+	$(RUN) exemplos.e13_canario_worker.worker
+e13: ## E13: roda o canário uma vez
+	$(RUN) exemplos.e13_canario_worker.iniciar
+e13-agendar: ## E13: cria o schedule do canário (a cada 30s)
+	$(RUN) exemplos.e13_canario_worker.iniciar --agendar
+
+e14-worker: ## E14: worker do carrinho
+	$(RUN) exemplos.e14_entidade_carrinho.worker
+e14: ## E14: abre, altera e fecha um carrinho por Updates
+	$(RUN) exemplos.e14_entidade_carrinho.iniciar
+
 todos: ## Roda todos os exemplos em sequência (popula a UI)
 	bash scripts/rodar_todos.sh
 
@@ -120,4 +151,4 @@ docker-kill-e01: ## Docker: mata o worker E01 (kill -9); religue com `docker com
 	@echo "Religue: $(COMPOSE) --profile e01 up -d e01-worker"
 
 docker-down: ## Docker: derruba tudo
-	$(COMPOSE) --profile e01 --profile e02 --profile e03 --profile e04 --profile e05 --profile e06 --profile e07 --profile e08 --profile tools down --remove-orphans
+	$(COMPOSE) --profile e01 --profile e02 --profile e03 --profile e04 --profile e05 --profile e06 --profile e07 --profile e08 --profile e10 --profile e11 --profile e12 --profile e13 --profile e14 --profile tools down --remove-orphans

@@ -120,3 +120,33 @@ services:
     profiles: [e08]
     command: python -m exemplos.e08_versionamento.worker v2
     restart: "no"
+
+  e10-worker:
+    <<: *app
+    profiles: [e10]
+    command: python -m exemplos.e10_automacao_rede.worker
+    restart: "no"
+
+  e11-worker:
+    <<: *app
+    profiles: [e11]
+    command: python -m exemplos.e11_lembrete_soneca.worker
+    restart: "no"
+
+  e12-worker:
+    <<: *app
+    profiles: [e12]
+    command: python -m exemplos.e12_fanout_child.worker
+    restart: "no"
+
+  e13-worker:
+    <<: *app
+    profiles: [e13]
+    command: python -m exemplos.e13_canario_worker.worker
+    restart: "no"
+
+  e14-worker:
+    <<: *app
+    profiles: [e14]
+    command: python -m exemplos.e14_entidade_carrinho.worker
+    restart: "no"
