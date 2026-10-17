@@ -14,8 +14,8 @@ Fan-out de medições: uma activity por (versão do Python, benchmark), uma por 
 ```bash
 make servidor        # terminal 1
 make e09-worker      # terminal 2
-make e09             # terminal 3 (5 repetições)
-uv run python -m exemplos.e09_benchmark_python.iniciar --repeticoes 1 --free-threaded
+make e09             # terminal 3 (10 rodadas × 3 repetições, mediana)
+uv run python -m exemplos.e09_benchmark_python.iniciar --rodadas 2 --free-threaded
 ```
 Requer `uv` com acesso à rede: a 1ª execução baixa os interpretadores (demora).
 

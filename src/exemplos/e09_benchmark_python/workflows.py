@@ -20,7 +20,8 @@ RETRY = RetryPolicy(maximum_attempts=3, initial_interval=timedelta(seconds=5))
 class Linha(BaseModel):
     versao: str
     nome: str
-    media_s: float
+    mediana_s: float
+    variacao: float  # desvio padrão / mediana (0.03 = ±3%)
     speedup: float  # >1 = mais rápido que a base
 
 
@@ -56,7 +57,6 @@ class BenchmarkPythonWorkflow:
         versoes = list(entrada.versoes)
         if entrada.free_threaded:
             versoes.append("3.14t")
-        self.total = len(versoes) * len(entrada.benchmarks)
 
         # 1) instala os interpretadores (o download não entra na medição)
         await asyncio.gather(
@@ -72,21 +72,29 @@ class BenchmarkPythonWorkflow:
             ]
         )
 
-        # 2) mede tudo em paralelo (o worker executa uma por vez)
-        medicoes = await asyncio.gather(
-            *[
-                self.medir(versao, nome, entrada.repeticoes)
-                for versao in versoes
-                for nome in entrada.benchmarks
-            ]
-        )
+        # 2) rodadas intercaladas, cada uma em ordem embaralhada: o ruído da máquina se espalha
+        pares = [(v, n) for v in versoes for n in entrada.benchmarks]
+        self.total = len(pares) * entrada.rodadas
+        tempos: dict[tuple[str, str], list[float]] = {p: [] for p in pares}
+        exatas: dict[str, str] = {}
+        for _ in range(entrada.rodadas):
+            workflow.random().shuffle(pares)
+            rodada = await asyncio.gather(*[self.medir(v, n, entrada.repeticoes) for v, n in pares])
+            for m in rodada:
+                tempos[m.versao, m.nome] += m.tempos
+                exatas[m.versao] = m.versao_exata
 
-        # 3) média por benchmark e speedup contra a primeira versão
-        medias = {(m.versao, m.nome): statistics.fmean(m.tempos) for m in medicoes}
-        linhas = []
-        for m in medicoes:
-            media = medias[m.versao, m.nome]
-            speedup = medias[versoes[0], m.nome] / media
-            linhas.append(Linha(versao=m.versao, nome=m.nome, media_s=media, speedup=speedup))
-        exatas = {m.versao: m.versao_exata for m in medicoes}
+        # 3) mediana (robusta a picos) e speedup contra a primeira versão
+        mediana = {p: statistics.median(t) for p, t in tempos.items()}
+        linhas = [
+            Linha(
+                versao=v,
+                nome=n,
+                mediana_s=mediana[v, n],
+                variacao=statistics.pstdev(t) / mediana[v, n],
+                speedup=mediana[versoes[0], n] / mediana[v, n],
+            )
+            for (v, n), t in tempos.items()
+        ]
+        exatas = {v: exatas[v] for v in versoes}  # colunas na ordem das versões
         return Resultado(base=versoes[0], linhas=linhas, versoes_exatas=exatas)

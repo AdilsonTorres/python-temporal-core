@@ -95,8 +95,8 @@ replay: ## Roda o replay dos históricos gravados (gate de deploy)
 
 e09-worker: ## E09: worker do benchmark
 	$(RUN) exemplos.e09_benchmark_python.worker
-e09: ## E09: roda o benchmark entre versões do Python
-	$(RUN) exemplos.e09_benchmark_python.iniciar
+e09: ## E09: roda o benchmark entre versões do Python (10 rodadas; ARGS="--rodadas 2")
+	$(RUN) exemplos.e09_benchmark_python.iniciar $(ARGS)
 
 todos: ## Roda todos os exemplos em sequência (popula a UI)
 	bash scripts/rodar_todos.sh

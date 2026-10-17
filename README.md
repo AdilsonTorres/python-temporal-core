@@ -243,7 +243,7 @@ make e08-worker-v2   # a v2 usa workflow.patched: o antigo segue v1, o novo segu
 
 ```bash
 make e09-worker
-make e09             # 5 repetições; a 1ª execução baixa os interpretadores via uv
+make e09             # 10 rodadas × 3 repetições (mediana); a 1ª execução baixa os interpretadores via uv
 ```
 
 Uma activity por medição, concorrência 1 para não distorcer. Opções: `uv run python -m exemplos.e09_benchmark_python.iniciar --repeticoes 1 --free-threaded`. Progresso (requer o CLI do Temporal): `temporal workflow query --workflow-id <id> --name progresso`.

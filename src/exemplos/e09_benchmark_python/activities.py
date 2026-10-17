@@ -14,7 +14,8 @@ BENCHMARKS = ["nbody", "fib", "json", "regex", "comprehension"]
 class Entrada(BaseModel):
     versoes: list[str] = ["3.13", "3.14", "3.15"]  # a primeira é a base do speedup
     benchmarks: list[str] = BENCHMARKS
-    repeticoes: int = 5
+    rodadas: int = 10  # rodadas intercaladas, cada uma numa ordem diferente
+    repeticoes: int = 3  # medições por activity (depois de 1 aquecimento)
     free_threaded: bool = False  # adiciona a variante 3.14t (sem GIL)
 
 
