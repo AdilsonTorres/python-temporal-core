@@ -91,3 +91,27 @@ async def test_tool_mcp_roda_como_activity(env_agentes, worker):
         if e.HasField("activity_task_scheduled_event_attributes")
     ]
     assert "agent__agente_mcp__mcp_server__ops__call_tool" in nomes
+
+
+def test_claude_code_interpreta_json_de_tool_e_resposta_final():
+    from pydantic_ai.messages import TextPart, ToolCallPart
+
+    from exemplos.e06_agente.claude_code import interpretar
+
+    cru = '```json\n{"tool": "consultar_status", "args": {"servico": "checkout"}}\n```'
+    parte = interpretar(cru).parts[0]
+    assert isinstance(parte, ToolCallPart)
+    assert parte.tool_name == "consultar_status"
+    assert parte.args_as_dict() == {"servico": "checkout"}
+
+    parte = interpretar('{"final": "tudo certo"}').parts[0]
+    assert isinstance(parte, TextPart)
+    assert parte.content == "tudo certo"
+
+
+@pytest.mark.parametrize("texto", ["não é json", '{"outra": 1}', ""])
+def test_claude_code_json_ruim_levanta_para_a_activity_repetir(texto):
+    from exemplos.e06_agente.claude_code import interpretar
+
+    with pytest.raises(ValueError):
+        interpretar(texto)

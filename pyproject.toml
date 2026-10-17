@@ -21,6 +21,9 @@ dependencies = [
     "uvicorn>=0.54.0",
 ]
 
+[project.optional-dependencies]
+anthropic = ["pydantic-ai-slim[anthropic]>=2.55.0"]  # AGENTE_MODELO=anthropic:...
+
 [project.urls]
 Repositorio = "https://github.com/AdilsonTorres/python-temporal-core"
 Palestra = "https://talks.python.org.br/pybr26/talk/USZCFC/"

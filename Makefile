@@ -3,6 +3,7 @@ RUN = uv run python -m
 ID ?= deploy-1
 QUEM ?= bruno
 AGENTE ?= agente-1
+PEDIDO ?= a api-pagamentos está lenta
 PEDIDO ?= 42
 ESPERA ?= 20
 
@@ -68,10 +69,12 @@ e05-agendar: ## E05: cria o schedule
 
 e06-worker: ## E06: worker do agente
 	$(RUN) exemplos.e06_agente.worker
-e06: ## E06: pede ao agente (AGENTE=agente-1)
-	$(RUN) exemplos.e06_agente.cli pedir $(AGENTE) "a api-pagamentos está lenta"
+e06: ## E06: pede ao agente (AGENTE=agente-1 PEDIDO="..."; LLM real: AGENTE_MODELO=claude-code no worker)
+	$(RUN) exemplos.e06_agente.cli pedir $(AGENTE) "$(PEDIDO)"
 e06-aprovar: ## E06: aprova ação pendente (AGENTE=agente-1 QUEM=bruno)
 	$(RUN) exemplos.e06_agente.cli aprovar $(AGENTE) $(QUEM)
+e06-pendencias: ## E06: mostra o que espera aprovação (AGENTE=agente-1)
+	$(RUN) exemplos.e06_agente.cli pendencias $(AGENTE)
 
 e07-backend: ## E07: backend LLM falso (porta 8001)
 	uv run uvicorn exemplos.e07_fila_gpu.backend_falso:app --port 8001

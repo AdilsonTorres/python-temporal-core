@@ -9,6 +9,7 @@
 | Timer longo (7 dias) | `workflows.py` · `BoasVindasWorkflow` (roda em ms no teste: `uv run pytest tests/test_e05_agendamentos.py`) |
 | Workflow disparado por Schedule | `workflows.py` · `RelatorioDiarioWorkflow` |
 | Criar/atualizar Schedule (cron seg-sex 08:00) | `agendar.py` |
+| Alternativas de `ScheduleSpec` (cron, intervalo, calendário, fuso, jitter) e política de overlap/catchup | comentário em `agendar.py` |
 
 ## Como executar
 ```bash
