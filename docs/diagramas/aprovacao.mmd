@@ -1,0 +1,11 @@
+sequenceDiagram
+    actor Ana
+    actor Bruno
+    participant WF as Workflow de deploy
+    Ana->>WF: start (solicitante = ana)
+    Note over WF: ⏳ wait_condition<br/>(timeout de 3 dias)
+    Ana->>WF: Update aprovar(ana)
+    WF-->>Ana: ❌ validador: não aprove o próprio deploy
+    Bruno->>WF: Update aprovar(bruno)
+    WF-->>Bruno: ✅ aprovado por bruno
+    WF->>WF: activity fazer_deploy

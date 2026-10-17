@@ -1,0 +1,122 @@
+# Servidor Temporal + workers dos exemplos. Uso: make docker-up / docker-e01 (ver Makefile).
+x-app: &app
+  build: .
+  image: temporal-core-exemplos:local
+  environment:
+    TEMPORAL_ADDRESS: temporal:7233
+  depends_on:
+    temporal:
+      condition: service_healthy
+
+services:
+  temporal:
+    image: temporalio/temporal:1.9.1
+    # UI embutida desligada: a UI mais nova roda no serviço "ui" abaixo
+    command: server start-dev --ip 0.0.0.0 --headless
+    ports:
+      - "${TEMPORAL_PORTA:-7233}:7233"
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "127.0.0.1:7233"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # Temporal UI 2.56 (a CLI 1.9.1 traz a 2.54.1 embutida)
+  ui:
+    image: temporalio/ui:2.56.0
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_UI_PORT: "8233"
+      TEMPORAL_NAV_COLLAPSED_BY_DEFAULT: "true"
+      TEMPORAL_DISABLE_NEWS_FETCH: "true"
+    ports:
+      - "${TEMPORAL_UI_PORTA:-8233}:8233"
+    depends_on:
+      temporal:
+        condition: service_healthy
+
+  # Executa comandos avulsos: docker compose run --rm app python -m exemplos.e01_pedido.iniciar
+  app:
+    <<: *app
+    profiles: [tools]
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      LLM_BACKEND_URL: http://e07-backend:8001
+      DEMORA_PASSO: ${DEMORA_PASSO:-3}
+      FALHAR_PAGAMENTO: ${FALHAR_PAGAMENTO:-}
+      FALHAR_CARRO: ${FALHAR_CARRO:-}
+
+  e01-worker:
+    <<: *app
+    profiles: [e01]
+    command: python -m exemplos.e01_pedido.worker
+    restart: "no"
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      DEMORA_PASSO: ${DEMORA_PASSO:-3}
+      FALHAR_PAGAMENTO: ${FALHAR_PAGAMENTO:-}
+
+  e02-worker:
+    <<: *app
+    profiles: [e02]
+    command: python -m exemplos.e02_idempotencia.worker
+    restart: "no"
+
+  e02-api:
+    <<: *app
+    profiles: [e02]
+    command: uvicorn exemplos.e02_idempotencia.api:app --host 0.0.0.0 --port 8000
+    restart: "no"
+    ports:
+      - "8000:8000"
+
+  e03-worker:
+    <<: *app
+    profiles: [e03]
+    command: python -m exemplos.e03_saga.worker
+    restart: "no"
+
+  e04-worker:
+    <<: *app
+    profiles: [e04]
+    command: python -m exemplos.e04_aprovacao.worker
+    restart: "no"
+
+  e05-worker:
+    <<: *app
+    profiles: [e05]
+    command: python -m exemplos.e05_agendamentos.worker
+    restart: "no"
+
+  e06-worker:
+    <<: *app
+    profiles: [e06]
+    command: python -m exemplos.e06_agente.worker
+    restart: "no"
+
+  e07-backend:
+    <<: *app
+    profiles: [e07]
+    command: uvicorn exemplos.e07_fila_gpu.backend_falso:app --host 0.0.0.0 --port 8001
+    restart: "no"
+
+  e07-worker:
+    <<: *app
+    profiles: [e07]
+    command: python -m exemplos.e07_fila_gpu.worker
+    restart: "no"
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      LLM_BACKEND_URL: http://e07-backend:8001
+
+  e08-worker-v1:
+    <<: *app
+    profiles: [e08]
+    command: python -m exemplos.e08_versionamento.worker v1
+    restart: "no"
+
+  e08-worker-v2:
+    <<: *app
+    profiles: [e08]
+    command: python -m exemplos.e08_versionamento.worker v2
+    restart: "no"

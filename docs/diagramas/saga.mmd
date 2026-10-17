@@ -1,0 +1,8 @@
+flowchart LR
+    V["✈️ reservar voo"] --> H["🏨 reservar hotel"] --> C{"🚗 reservar carro"}
+    C -->|ok| F["✅ viagem confirmada"]
+    C -->|falhou| CH["↩️ cancelar hotel"] --> CV["↩️ cancelar voo"] --> X["❌ viagem desfeita"]
+    classDef bad fill:#F8E1D8,stroke:#B4441C,color:#5A1E0A
+    classDef good fill:#DDEFE3,stroke:#1F6E43,color:#0E3B22
+    class CH,CV,X bad
+    class F good

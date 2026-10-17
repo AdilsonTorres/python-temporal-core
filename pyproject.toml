@@ -1,0 +1,54 @@
+[project]
+name = "python-temporal-core"
+version = "0.1.0"
+description = "Exemplos da palestra 'Python + Temporal: O Core de Workflows Modernos' (Python Brasil 2026)"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Adilson Torres" }]
+keywords = ["temporal", "durable-execution", "workflows", "python-brasil", "pydantic-ai"]
+classifiers = [
+    "Programming Language :: Python :: 3.14",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.143.0",
+    "httpx>=0.28.1",
+    "pydantic>=2.14.1",
+    "pydantic-ai-slim[mcp,openai,temporal]>=2.55.0",
+    "temporalio>=1.34.0",
+    "uvicorn>=0.54.0",
+]
+
+[project.urls]
+Repositorio = "https://github.com/AdilsonTorres/python-temporal-core"
+Palestra = "https://talks.python.org.br/pybr26/talk/USZCFC/"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "exemplos"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-timeout>=2.4.0",
+    "ruff>=0.17.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
+timeout = 60
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
