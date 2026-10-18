@@ -1,0 +1,12 @@
+flowchart LR
+    C["🧑‍💻 Client<br/>FastAPI · CLI · script"] -->|inicia / sinaliza| S
+    subgraph S["⏱️ Temporal Server"]
+        H[("Histórico<br/>de eventos")]
+        Q["Task queues"]
+        T["Timers"]
+    end
+    W["🐍 Workers Python<br/>workflows + activities"] -->|poll| Q
+    W -->|resultados| H
+    W -->|I/O| M["🌍 APIs · banco · LLM · roteadores"]
+    classDef dark fill:#0F1B2D,stroke:#0F1B2D,color:#F6F4EE
+    class S dark

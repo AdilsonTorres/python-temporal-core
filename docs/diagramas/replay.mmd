@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant S as Temporal Server
+    participant W1 as Worker 1
+    participant W2 as Worker 2
+    S->>W1: validar_pedido
+    W1-->>S: ✅ concluído
+    S->>W1: cobrar
+    W1-->>S: ✅ "pag-42"
+    S->>W1: reservar_estoque
+    Note over W1: 💥 kill -9
+    S->>W2: replay do histórico
+    Note over W2: validar e cobrar vêm do histórico<br/>(não rodam de novo)
+    S->>W2: reservar_estoque (tentativa 2)
+    W2-->>S: ✅ concluído
+    S->>W2: enviar · notificar
+    W2-->>S: ✅ pedido concluído

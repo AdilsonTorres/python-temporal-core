@@ -1,0 +1,8 @@
+flowchart TD
+    P["📝 pedido do usuário"] --> L["🤖 LLM<br/>(activity)"]
+    L -->|tool call| T["🔧 consultar_status<br/>(activity / MCP)"]
+    T --> L
+    L -->|ação perigosa| A{"⏳ aprovação humana<br/>(Update)"}
+    A -->|aprovado| R["🔁 reiniciar_servico<br/>(activity)"] --> L
+    A -->|negado| L
+    L -->|resposta final| F["✅ resultado"]

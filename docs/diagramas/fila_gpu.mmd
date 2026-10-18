@@ -1,0 +1,6 @@
+flowchart LR
+    P1["prompt 1"] & P2["prompt 2"] & P3["prompt 3"] --> Q["📬 fila-gpu"]
+    Q --> W["🐍 worker<br/>max_concurrent_activities=1"]
+    W -->|uma por vez| G["🎮 GPU / Ollama"]
+    G -. fora do ar .-> RT["🔁 retry com backoff<br/>(a requisição espera)"]
+    RT -.-> W
