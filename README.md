@@ -6,6 +6,8 @@ Exemplos da palestra da **Python Brasil 2026** (Adilson Torres): workflows durá
 
 Página da palestra: https://talks.python.org.br/pybr26/talk/USZCFC/
 
+Slides (91, em português): [PDF](slides/pybr26-python-temporal.pdf) · [PPTX com os GIFs animados](slides/pybr26-python-temporal.pptx) · [HTML offline](slides/html/index.html) (abra `slides/html/index.html` no navegador; setas avançam, `F` tela cheia). No PDF, os GIFs viram um quadro parado.
+
 ![Worker morto com kill -9, o pedido continua de onde parou](docs/media/demo-e01-kill.gif)
 
 ## Quickstart
@@ -330,6 +332,7 @@ Portas ocupadas? `TEMPORAL_PORTA=17233 TEMPORAL_UI_PORTA=18233 make docker-up` (
 
 **Esta palestra**
 - [Página na Python Brasil 2026](https://talks.python.org.br/pybr26/talk/USZCFC/)
+- Slides: [PDF](slides/pybr26-python-temporal.pdf) · [PPTX](slides/pybr26-python-temporal.pptx) · [HTML offline](slides/html/index.html)
 - Roteiro das demos ao vivo: [docs/roteiro-demo.md](docs/roteiro-demo.md)
 
 **Palestras anteriores sobre o tema**
